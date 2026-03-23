@@ -1,0 +1,34 @@
+.custom-home-hero {
+  padding: 1.8rem 3.2rem 1.6rem;
+  color: #fff;
+}
+
+.custom-home-hero-inner {
+  max-width: 72rem;
+}
+
+.custom-home-hero-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.custom-home-hero-subtitle {
+  font-size: 1.4rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+@media (max-width: 900px) {
+  .custom-home-hero {
+    padding: 1.4rem 1.6rem 1.2rem;
+  }
+
+  .custom-home-hero-title {
+    font-size: 1.8rem;
+  }
+
+  .custom-home-hero-subtitle {
+    font-size: 1.2rem;
+  }
+}
