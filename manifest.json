@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 2,
+  "id": "Jellyfin.Plugin.CustomHome",
+  "name": "Custom Home",
+  "description": "Adds a configurable greeting hero and editor's choice section to the Jellyfin home screen via Home Screen Sections.",
+  "overview": "Custom greeting hero and editor's choice section for the home screen.",
+  "owner": "milanwdewaele",
+  "category": "General",
+  "versions": [
+    {
+      "version": "0.1.0",
+      "changelog": "Initial preview version.",
+      "targetAbi": "10.10.7.0",
+      "sourceUrl": "https://github.com/milanwdewaele/jellyfin-plugin-custom-home",
+      "checksum": "",
+      "timestamp": "2026-03-23T00:00:00Z",
+      "repositoryUrl": "https://github.com/milanwdewaele/jellyfin-plugin-custom-home"
+    }
+  ]
+}

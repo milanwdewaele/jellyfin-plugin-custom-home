@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Custom Home</title>
+</head>
+<body>
+    <div data-role="page" class="page type-interior pluginConfigurationPage customHomeConfigPage" data-require="emby-input,emby-button">
+        <div data-role="content">
+            <div class="content-primary">
+                <form class="customHomeConfigForm">
+                    <h2>Custom Home instellingen</h2>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="greetingTemplate">Begroeting (titel)</label>
+                        <input id="greetingTemplate" type="text" is="emby-input" />
+                        <div class="fieldDescription">
+                            Gebruik <code>{UserName}</code> als placeholder voor de gebruikersnaam.
+                        </div>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="subtitleOptions">Subtitels (één per lijn)</label>
+                        <textarea id="subtitleOptions" is="emby-input"></textarea>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="editorsChoiceItemId">Editor's Choice item Id</label>
+                        <input id="editorsChoiceItemId" type="text" is="emby-input" />
+                        <div class="fieldDescription">
+                            Plak hier de Jellyfin item Id (GUID) van je favoriete film of serie.
+                        </div>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel" for="editorsChoiceTitle">Editor's Choice titel</label>
+                        <input id="editorsChoiceTitle" type="text" is="emby-input" />
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label>
+                            <input type="checkbox" is="emby-checkbox" id="enableHero" />
+                            <span>Hero sectie inschakelen</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer">
+                        <label>
+                            <input type="checkbox" is="emby-checkbox" id="enableEditorsChoice" />
+                            <span>Editor's Choice sectie inschakelen</span>
+                        </label>
+                    </div>
+
+                    <button is="emby-button" type="submit" class="raised button-submit emby-button">
+                        <span>Bewa...</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (function () {
+            const pluginId = "c3cf7f0e-5bb0-4de4-9689-4c8f6e2fd111";
+
+            function loadConfig() {
+                return ApiClient.getJSON(ApiClient.getUrl("Plugins/" + pluginId + "/Configuration"));
+            }
+
+            function saveConfig(config) {
+                return ApiClient.postJSON(ApiClient.getUrl("Plugins/" + pluginId + "/Configuration"), config);
+            }
+
+            document.addEventListener("pageshow", function (e) {
+                const page = e.target;
+                if (!page.classList.contains("customHomeConfigPage")) {
+                    return;
+                }
+
+                const form = page.querySelector(".customHomeConfigForm");
+                const greetingTemplate = page.querySelector("#greetingTemplate");
+                const subtitleOptions = page.querySelector("#subtitleOptions");
+                const editorsChoiceItemId = page.querySelector("#editorsChoiceItemId");
+                const editorsChoiceTitle = page.querySelector("#editorsChoiceTitle");
+                const enableHero = page.querySelector("#enableHero");
+                const enableEditorsChoice = page.querySelector("#enableEditorsChoice");
+
+                loadConfig().then(function (config) {
+                    greetingTemplate.value = config.GreetingHeroTitleTemplate || "";
+                    subtitleOptions.value = (config.GreetingHeroSubtitleOptions || []).join("\n");
+                    editorsChoiceItemId.value = config.EditorsChoiceItemId || "";
+                    editorsChoiceTitle.value = config.EditorsChoiceTitle || "Editor's Choice";
+                    enableHero.checked = config.EnableHeroSection;
+                    enableEditorsChoice.checked = config.EnableEditorsChoiceSection;
+                });
+
+                form.addEventListener("submit", function (ev) {
+                    ev.preventDefault();
+
+                    loadConfig().then(function (config) {
+                        config.GreetingHeroTitleTemplate = greetingTemplate.value || "Goeiedag, {UserName}";
+                        config.GreetingHeroSubtitleOptions = subtitleOptions.value
+                            .split("\n")
+                            .map(function (x) { return x.trim(); })
+                            .filter(function (x) { return x.length > 0; });
+                        config.EditorsChoiceItemId = editorsChoiceItemId.value || null;
+                        config.EditorsChoiceTitle = editorsChoiceTitle.value || "Editor's Choice";
+                        config.EnableHeroSection = enableHero.checked;
+                        config.EnableEditorsChoiceSection = enableEditorsChoice.checked;
+
+                        saveConfig(config).then(function () {
+                            Dashboard.processPluginConfigurationUpdateResult();
+                        });
+                    });
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
